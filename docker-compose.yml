@@ -1,31 +1,43 @@
-
 services:
   backend:
-    build: ./backend
+    container_name: hrms-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports:
+      - "3001:3001"
     volumes:
       - ./backend:/app
       - /app/node_modules
-    ports:
-      - "3001:3001"
     environment:
       - NODE_ENV=development
-    networks:
-      - dev
+    command: ["npx", "ts-node-dev", "--respawn", "--transpile-only", "src/main.ts"]
+    depends_on:
+      - mongo
 
   frontend:
-    build: ./frontend
+    container_name: hrms-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports:
+      - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=development
-      - VITE_API_URL=http://localhost:3001
-    depends_on:
-      - backend
-    networks:
-      - dev
+    command: ["npm", "run", "dev"]
 
-networks:
-  dev:
+  mongo:
+    image: mongo:6
+    container_name: hrms-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
