@@ -1,22 +1,16 @@
 FROM node:18
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files first
+# Copy and install dependencies
 COPY package*.json ./
-
-# Install all dependencies (including @nestjs/mongoose)
 RUN npm install
 
-# Copy the rest of the application
+# Copy source files
 COPY . .
 
-# Ensure ts-node-dev is installed (if not already in devDependencies)
-RUN npm install --save-dev ts-node-dev
-
-# Expose the NestJS port
+# Expose NestJS app port
 EXPOSE 3001
 
-# Run the app with hot-reloading
+# Run with hot-reloading
 CMD ["npx", "ts-node-dev", "--respawn", "--transpile-only", "src/main.ts"]
