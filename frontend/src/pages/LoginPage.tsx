@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { GoogleLogin } from "react-google-login";
 import InputField from "../components/common/InputField";
 import Button from "../components/common/ButtonComp";
-
+import { useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -15,22 +16,52 @@ const Login: React.FC = () => {
     setPassword(e.target.value);
   };
 
-  const responseGoogle = (response: any) => {
-    console.log(response);
-    // Handle the response from Google here
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login with email and password
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      const res = await fetch("/user.json");
+      console.log(res);
+      const users = await res.json();
+      console.log(users);
+      console.log(res);
+
+      const user = users.find(
+        (u) => u.username === email && u.password === password
+      );
+
+      if (user) {
+        setErrorMsg("");
+        if (user.role === "admin" || user.role === "hr") {
+          navigate("/admin/dashboard");
+        } else if (user.role === "employee") {
+          navigate("/employee/dashboard");
+        } else {
+          navigate("/login");
+        }
+      } else {
+        setErrorMsg("Invalid credentials");
+      }
+    } catch (err) {
+      setErrorMsg("Something went wrong.");
+    }
   };
+  // useEffect(() => {
+  //   if (user) {
+  //     if (user.role === "admin"|| "hr") {
+  //       navigate("/hr/dashboard");
+  //     } else if (user.role === "employee") {
+  //       navigate("/admin/dashboard");
+  //     }
+  //   } else {
+  //     navigate("/login");
+  //   }
+  // }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <p className="text-red-400">{errorMsg}</p>
         <form onSubmit={handleSubmit}>
           <InputField
             type="email"
@@ -44,21 +75,11 @@ const Login: React.FC = () => {
             placeholder="Password"
             onChange={handlePasswordChange}
           />
+          <div>
+            <p className="text-gray-500 pb-2">Forgot password</p>
+          </div>
           <Button name="Login" />
         </form>
-        <div className="mt-4 text-center">
-          <span className="text-gray-600">or</span>
-        </div>
-        {/* <div className="mt-4">
-          <GoogleLogin
-            clientId="YOUR_GOOGLE_CLIENT_ID" // Replace with your Google client ID
-            buttonText="Login with Google"
-            onSuccess={responseGoogle}
-            onFailure={responseGoogle}
-            cookiePolicy={'single_host_origin'}
-            className="w-full"
-          />
-        </div> */}
       </div>
     </div>
   );
