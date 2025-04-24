@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pencil, Trash2, UserRound } from "lucide-react";
+import ConfirmationModal from "../Modal/ConfirmModal";
 
 type Employee = {
   id: string;
@@ -17,10 +18,17 @@ type TableProps = {
 };
 
 const Table: React.FC<TableProps> = ({ headers, data }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleDeleteUser = () => {
+    console.log("user deleted");
+  };
+  const handleDeleteButton = () => {
+    setModalOpen(true);
+  };
   return (
     <div className="overflow-x-auto rounded-xl shadow-md">
       <table className="min-w-full text-sm text-left text-gray-700 bg-white">
-        <thead className="bg-gray-100 border-b">
+        <thead className="bg-blue-900 text-white border-b">
           <tr>
             {headers.map((header, index) => (
               <th
@@ -39,7 +47,7 @@ const Table: React.FC<TableProps> = ({ headers, data }) => {
               className="border-b bg-gray-100 hover:bg-gray-50"
             >
               {headers.map((header, colIndex) => (
-                <td key={colIndex} className="px-6 py-4 text-black">
+                <td key={colIndex} className="px-6 py-4 text-md text-black">
                   {header === "profile" ? (
                     <UserRound size={16} />
                   ) : header === "actions" ? (
@@ -47,7 +55,10 @@ const Table: React.FC<TableProps> = ({ headers, data }) => {
                       <button className="text-blue-500">
                         <Pencil size={16} />
                       </button>
-                      <button className="text-red-500 cursor-pointer">
+                      <button
+                        className="text-red-500 cursor-pointer"
+                        onClick={handleDeleteButton}
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -61,6 +72,18 @@ const Table: React.FC<TableProps> = ({ headers, data }) => {
           ))}
         </tbody>
       </table>
+      {modalOpen && (
+        <>
+          <ConfirmationModal
+            isOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+            message="Are you want to sure delete Employee"
+            confirmText="detete"
+            onConfirm={handleDeleteUser}
+            cancelText="cancel"
+          />
+        </>
+      )}
     </div>
   );
 };
