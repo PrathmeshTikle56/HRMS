@@ -1,75 +1,82 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { Menu, X, Bell, Mail, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import { Outlet } from "react-router-dom";
 const EmployeeLayout: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navLinks = ["Home", "About", "Services", "Projects", "Contact"];
+  const navLinks = ["Dashboard", "Profile", "Leaves", "Payroll", "Attendance"];
 
   return (
-    <header className="bg-white shadow-md fixed top-0 w-full z-50">
-      <div className="max-w-7.5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navbar container */}
-        <div className="flex items-center justify-center h-20">
-          {/* Left: Mobile Menu Button */}
-          <div className="flex items-center md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-800 focus:outline-none"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+    <>
+      <header className="bg-white shadow-md fixed top-0 w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Left: Logo or Brand */}
+            <div className="text-xl font-semibold text-blue-600">
+              <Link to="/">Startappss Portal</Link>
+            </div>
 
-          {/* Center: Nav Links (desktop only) */}
-          <nav className="hidden md:flex space-x-6">
+            {/* Center: Nav Links (desktop & tablet) */}
+            <nav className="hidden md:flex space-x-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link}
+                  to={`/employee/${link.toLowerCase()}`}
+                  className="text-gray-700 hover:text-blue-600 font-medium transition duration-200"
+                >
+                  {link}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Right: Icons & Mobile Toggle */}
+            <div className="flex items-center space-x-4">
+              {/* Desktop/Tablet: Icons */}
+              <div className="hidden md:flex space-x-4 text-gray-600">
+                <Bell className="hover:text-blue-600 cursor-pointer" />
+                <Mail className="hover:text-blue-600 cursor-pointer" />
+                <Settings className="hover:text-blue-600 cursor-pointer" />
+              </div>
+
+              {/* Mobile: Menu Button */}
+              <div className="md:hidden">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="text-gray-800 focus:outline-none"
+                >
+                  {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isOpen && (
+          <div className="md:hidden bg-white shadow-md px-4 pb-4 pt-2 space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link}
                 to={`/${link.toLowerCase()}`}
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                onClick={() => setIsOpen(false)}
+                className="block text-gray-700 hover:text-blue-600 font-medium transition"
               >
                 {link}
               </Link>
             ))}
-          </nav>
-
-          {/* Right: Icon Buttons */}
-          <div className="hidden md:flex items-center space-x-4 text-gray-700">
-            <button className="hover:text-blue-600 w-10 h-10 flex items-center justify-center rounded-full bg-amber-300">
-              <Settings size={20} />
-            </button>
-            <button className="hover:text-blue-600 w-10 h-10 flex items-center justify-center rounded-full bg-amber-300">
-              <Bell size={20} />
-            </button>
-            <button className="hover:text-blue-600 w-10 h-10 flex items-center justify-center rounded-full bg-amber-300">
-              <Mail size={20} />
-            </button>
+            <hr />
+            <div className="flex justify-evenly text-gray-600 pt-2">
+              <Bell className="hover:text-blue-600 cursor-pointer" />
+              <Mail className="hover:text-blue-600 cursor-pointer" />
+              <Settings className="hover:text-blue-600 cursor-pointer" />
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Dropdown Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white shadow-md px-4 pb-4 pt-2 space-y-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link}
-              to={`/${link.toLowerCase()}`}
-              className="block text-gray-700 hover:text-blue-600"
-              onClick={() => setIsOpen(false)}
-            >
-              {link}
-            </Link>
-          ))}
-          <div className="flex justify-end space-x-4 mt-4">
-            <Settings size={20} className="text-gray-700 hover:text-blue-600" />
-            <Bell size={20} className="text-gray-700 hover:text-blue-600" />
-            <Mail size={20} className="text-gray-700 hover:text-blue-600" />
-          </div>
-        </div>
-      )}
-    </header>
+        )}
+      </header>
+      <main className="mt-24 p-4">
+        <Outlet />
+      </main>
+    </>
   );
 };
 
