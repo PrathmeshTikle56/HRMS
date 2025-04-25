@@ -12,6 +12,11 @@
   {
     "username": "employee@gmail.com",
     "password": "employee123",
-    "role": "employee"
+    "role": "employee",
+    "leaves": {
+      "Sick Leave": { "used": 3, "total": 10 },
+      "Casual Leave": { "used": 1, "total": 5 },
+      "Annual Leave": { "used": 6, "total": 15 }
+    }
   }
 ]

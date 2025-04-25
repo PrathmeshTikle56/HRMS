@@ -8,7 +8,8 @@ import EmployeeDashboard from "./pages/EmployeeDashboard";
 import LeaveManagement from "./pages/LeaveManagement";
 import PayrollManagement from "./pages/PayrollManagement";
 import EmployeeManagement from "./pages/EmployeeManagement";
-
+import SignupPage from "./pages/SignUpPage";
+import UserCreationForm from "./components/Form/UserCreationForm";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -16,6 +17,7 @@ const AppRoutes = () => {
       <Route path="/admin" element={<AdminLayout />}>
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="employees" element={<EmployeeManagement />} />
+        <Route path="create-user" element={<UserCreationForm />} />
         <Route path="leave" element={<LeaveManagement />} />
         <Route path="payroll" element={<PayrollManagement />} />
       </Route>
